@@ -63,14 +63,19 @@
 <body class="bg-gray-100">
     <header class="bg-blue-500 text-white py-4 flex justify-between items-center shadow-md sticky top-0 z-10 rounded-md">
         <div class="logo text-xl font-bold ml-4 animate-bounce">Mon E-commerce</div>
-        <nav class="mr-4">
-            <ul class="flex space-x-4">
-                <li><a href="#home" class="hover:text-blue-300 no-underline">Accueil</a></li>
-                <li><a href="#products" class="hover:text-blue-300 no-underline">Produits</a></li>
-                <li><a href="#about" class="hover:text-blue-300 no-underline">À Propos</a></li>
-                <li><a href="#contact" class="hover:text-blue-300 no-underline">Contact</a></li>
+        <button id="menu-toggle" class="mr-4 md:hidden focus:outline-none">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+        </button>
+        <nav id="main-nav" class="mr-4 hidden md:block absolute top-full right-0 bg-blue-500 md:bg-transparent shadow-md md:shadow-none rounded-md md:rounded-none">
+            <ul class="flex flex-col md:flex-row space-x-0 md:space-x-4 p-4 md:p-0">
+                <li><a href="#home" class="hover:text-blue-300 no-underline block py-2 md:inline">Accueil</a></li>
+                <li><a href="#products" class="hover:text-blue-300 no-underline block py-2 md:inline">Produits</a></li>
+                <li><a href="#about" class="hover:text-blue-300 no-underline block py-2 md:inline">À Propos</a></li>
+                <li><a href="#contact" class="hover:text-blue-300 no-underline block py-2 md:inline">Contact</a></li>
                 <li>
-                    <a href="#cart" class="flex items-center hover:text-blue-300 no-underline">
+                    <a href="#cart" class="flex items-center hover:text-blue-300 no-underline block py-2 md:inline">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shopping-cart"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
                         <span class="ml-1" id="cart-count">0</span>
                     </a>
@@ -306,6 +311,23 @@
         document.addEventListener('DOMContentLoaded', () => {
             displayProducts();
             updateCartCount();
+
+            const menuToggle = document.getElementById('menu-toggle');
+            const mainNav = document.getElementById('main-nav');
+
+            menuToggle.addEventListener('click', () => {
+                mainNav.classList.toggle('hidden');
+                mainNav.classList.toggle('absolute'); // Ajout pour le positionnement
+            });
+
+            // Fermer la navigation au clic en dehors de la navigation
+            document.addEventListener('click', (event) => {
+                const isClickInsideMenu = mainNav.contains(event.target) || menuToggle.contains(event.target);
+                if (!isClickInsideMenu && !mainNav.classList.contains('hidden')) {
+                    mainNav.classList.add('hidden');
+                    mainNav.classList.remove('absolute');
+                }
+            });
         });
 
         function showProductDetails(productId) {
@@ -377,9 +399,9 @@
                 displayCartItems();
                 showToast(`${product.name} a été ajouté au panier !`);
 
-                // Envoyer un email de notification d'ajout au panier
-                const mailtoLink = `mailto:gisaper741@sendesco.com?subject=Produit ajouté au panier&body=Le produit ${encodeURIComponent(product.name)} a été ajouté au panier.`;
-                window.open(mailtoLink, '_blank');
+                // Supprimer l'envoi de mail de notification d'ajout au panier
+                // const mailtoLink = `mailto:gisaper741@sendesco.com?subject=Produit ajouté au panier&body=Le produit ${encodeURIComponent(product.name)} a été ajouté au panier.`;
+                // window.open(mailtoLink, '_blank');
             }
         }
 
